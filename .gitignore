@@ -41,3 +41,4 @@
 *.dwo
 
 ga_rules
+/results
