@@ -1,1 +1,4 @@
+make | exit 1
+echo ""
+
 ./ga_rules testTennis --p 80 --r 0.6 --m 0.05 --gens 200 --selection tournament --max-rules 6 --seed 42
