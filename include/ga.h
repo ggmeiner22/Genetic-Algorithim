@@ -34,7 +34,6 @@ struct GAConfig {
     SelectionStrategy selection = SelectionStrategy::TOURNAMENT;
     int tournament_size = 3;
     unsigned int seed = 42;
-    bool verbose = false;
 };
 
 struct GARunResult {
