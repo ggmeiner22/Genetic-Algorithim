@@ -1,125 +1,174 @@
-Genetic Algorithm Rule Learner (C++ / Modularized)
-==================================================
+# Genetic-Algorithim
 
-Files
------
-- Makefile
-- include/*.h
-- src/*.cpp
-- data/*.txt
+This project implements a Genetic Algorithm (GA) for learning rule-based classifiers from data. 
+Each solution (individual) is a set of IF-THEN rules that classify examples. The algorithm evolves 
+these rule sets over multiple generations using selection, crossover, and mutation.
 
-Overview
---------
-This project implements a modular genetic algorithm for learning variable-length
-rule sets. Each individual is a disjunctive list of rules:
+The system supports both:
+- **Discrete datasets** (e.g., Tennis)
+- **Continuous datasets** (e.g., Iris, using discretization into bins)
 
-  IF attribute constraints match THEN predict class
+The goal is to learn rules that maximize classification accuracy on training data while generalizing well to test data.
 
-The system supports:
-- variable-length individuals (rule sets)
-- population size p
-- replacement rate r
-- mutation rate m
-- stopping by generation limit and/or training accuracy threshold
-- selection strategies: fitness-proportional, tournament, rank
-- both datasets required by the assignment: Tennis and Iris
+Key features:
+- Multiple selection strategies (fitness-proportional, tournament, rank)
+- Structural mutation (rules can be added or removed)
+- Discretization of continuous attributes into bins
+- Experiment scripts for evaluating performance across parameters
 
-Important note about Iris
--------------------------
-The textbook GABIL example is propositional. The Iris attributes are continuous,
-so this implementation discretizes each continuous attribute into bins using the
-training data range. By default, 3 bins are used:
-- low
-- medium
-- high
+---
 
-This keeps the internal rule representation uniform across Tennis and Iris.
+## Compalation and Execution
+```
+chmod -R u+w .
+chmod +x *.sh
+chmod +x scripts/*.sh
+chmod +x src/*.cpp
+```
+### Run All
+```
+./run_all.sh
+```
 
-Compilation on code01.fit.edu
------------------------------
-This project uses only standard C++17 and the GNU g++ toolchain.
-No non-standard libraries are required.
+---
 
-Compile with:
+### Run Individually
+#### Build
+```
+make
+```
+#### Tennis
+```
+./scripts/testTennis.sh
+```
+#### Iris
+```
+./scripts/testIris.sh
+```
+#### Iris Replacement
+```
+./scripts/testIrisReplacement.sh
+```
+#### Iris Selection
+```
+./scripts/testIrisSelection.sh
+```
+#### Clean object files
+```
+make clean
+```
 
-  make
+---
 
-This produces the executable:
+## File Structure
+```
+.
+├── data
+│   ├── iris-attr.txt
+│   ├── iris-test.txt
+│   ├── iris-train.txt
+│   ├── tennis-attr.txt
+│   ├── tennis-test.txt
+│   └── tennis-train.txt
+├── include
+│   ├── dataset.h
+│   ├── experiments.h
+│   ├── ga.h
+│   └── util.h
+├── scripts
+│   ├── gridSearch.sh
+│   ├── testIris.sh
+│   ├── testIrisReplacement.sh
+│   ├── testIrisSelection.sh
+│   └── testTennis.sh
+├── src
+│   ├── dataset.cpp
+│   ├── experiments.cpp
+│   ├── ga.cpp
+│   ├── main.cpp
+│   └── util.cpp
+│
+├── Makefile
+└── run_all.sh
+```
 
-  ./ga_rules
+## File Overview
 
-Clean with:
+### dataset.h / dataset.cpp
+Handles all dataset loading and preprocessing.
+- Parses attribute files and data files
+- Converts symbolic values into indices
+- Discretizes continuous values into bins (low, medium, high, etc.)
+- Splits data into training and test sets
+- Computes the majority class for default predictions
 
-  make clean
+---
 
-How to run the required tests
------------------------------
-1. Tennis learned rules + training/test accuracy
+### experiments.h / experiments.cpp
+Controls experiment execution based on command-line input.
+- Runs different experiment modes (Tennis, Iris, selection tests, replacement tests)
+- Configures GA parameters
+- Prints results and tracks performance across runs
 
-   ./ga_rules testTennis --p 80 --r 0.6 --m 0.05 --gens 200 --selection tournament --max-rules 6 --seed 42
+---
 
-2. Iris learned rules + training/test accuracy
+### ga.h / ga.cpp
+Core implementation of the Genetic Algorithm.
+- Defines rules, individuals, and GA configuration
+- Implements:
+  - Selection (roulette, tournament, rank)
+  - Crossover (combine individuals)
+  - Mutation (modify rules and structure)
+- Evaluates individuals using training and test accuracy
+- Runs evolution across generations to find the best rule set
 
-   ./ga_rules testIris --p 150 --r 0.6 --m 0.03 --gens 300 --selection tournament --max-rules 8 --seed 42 --bins 3
+---
 
-3. Iris selection strategy experiment
-   Varies the generation number and prints generation number, training accuracy,
-   and test accuracy for the three selection strategies.
+### util.h / util.cpp
+Utility/helper functions used across the project.
+- String processing (split, trim)
+- Random number generation (uniform float and integer)
+> These functions support parsing and stochastic behavior in the GA
 
-   ./ga_rules testIrisSelection --p 150 --r 0.6 --m 0.03 --max-rules 8 --seed 42
+---
 
-4. Iris replacement-rate experiment
-   Varies replacement rate from 0.1 to 0.9 and prints replacement rate and
-   test-set accuracy for the three selection strategies.
+### main.cpp
+Entry point of the program.
+- Calls `run_command()` to execute experiments
+- Handles errors safely using try-catch
+> Keeps the program simple and delegates logic to experiments.cpp
 
-   ./ga_rules testIrisReplacement --p 150 --m 0.03 --gens 300 --max-rules 8 --seed 42
+---
 
-Command-line options
---------------------
---p <int>           population size
---r <double>        replacement rate
---m <double>        mutation rate
---gens <int>        number of generations
---threshold <dbl>   stop early if training accuracy >= threshold
---selection <name>  fitness | tournament | rank
---max-rules <int>   max rules in an individual
---seed <int>        RNG seed
---bins <int>        number of bins for continuous attrs (Iris)
+### data/
+Contains datasets used for experiments.
+- **tennis**-* – discrete attribute classification dataset
+- **iris**-* – continuous attribute classification dataset
+> Each dataset includes an attribute file describing the schema and corresponding training/testing files.
 
-Representation details
-----------------------
-- A rule stores, for each attribute, a bitmask of allowed values.
-- A rule matches an example if each attribute value is allowed by the
-  corresponding bitmask.
-- An individual is an ordered list of rules.
-- Prediction uses the first matching rule.
-- If no rule matches, the default prediction is the majority training class.
+---
 
-Fitness
--------
-Fitness is:
+### scripts/
+Automation scripts for running experiments.
+- `testTennis.sh` -> runs Tennis experiment
+- `testIris.sh` -> runs Iris experiment
+- `testIrisSelection.sh` -> tests different selection strategies
+- `testIrisReplacement.sh` -> tests different replacement rates
+- `gridSearch.sh` -> performs hyperparameter grid search
 
-  fitness = (training_accuracy)^2
 
-which follows the spirit of the textbook example.
+---
 
-Genetic operators
------------------
-- Selection: fitness-proportional, tournament, rank
-- Crossover: variable-length one-point crossover at rule boundaries
-- Mutation:
-  - flip an allowed value in a rule constraint
-  - optionally change a rule class
-  - optionally add a rule
-  - optionally delete a rule
+### Makefile
+Defines compilation rules for building the project.
+- Uses C++11 standard
+- Compiles source files into object files
+- Links the final executable
+> Ensures consistent builds across machines
 
-Suggested parameters
---------------------
-These worked reasonably well in local testing:
-- Tennis: p=80, r=0.6, m=0.05, generations=200, tournament selection
-- Iris:   p=150, r=0.6, m=0.03, generations=300, tournament selection, 3 bins
+---
 
-Notes
------
-Because this is a stochastic algorithm, results can change with the seed.
-To make runs reproducible, pass --seed <value>.
+### run_all.sh
+- Builds the project
+- Runs all experiment modes
+> Provides a reproducible workflow for testing the Genetic Algorithim on all datasets and experiments.
