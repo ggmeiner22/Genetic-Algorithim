@@ -1,5 +1,21 @@
 # Genetic-Algorithim
 
+This project implements a Genetic Algorithm (GA) for learning rule-based classifiers from data. 
+Each solution (individual) is a set of IF-THEN rules that classify examples. The algorithm evolves 
+these rule sets over multiple generations using selection, crossover, and mutation.
+
+The system supports both:
+- **Discrete datasets** (e.g., Tennis)
+- **Continuous datasets** (e.g., Iris, using discretization into bins)
+
+The goal is to learn rules that maximize classification accuracy on training data while generalizing well to test data.
+
+Key features:
+- Multiple selection strategies (fitness-proportional, tournament, rank)
+- Structural mutation (rules can be added or removed)
+- Discretization of continuous attributes into bins
+- Experiment scripts for evaluating performance across parameters
+
 ## Compalation and Execution
 ```
 chmod -R u+w .
@@ -72,19 +88,48 @@ make clean
 ## File Overview
 
 ### dataset.h / dataset.cpp
+Handles all dataset loading and preprocessing.
+- Parses attribute files and data files
+- Converts symbolic values into indices
+- Discretizes continuous values into bins (low, medium, high, etc.)
+- Splits data into training and test sets
+- Computes the majority class for default predictions
 
+---
 
 ### experiments.h / experiments.cpp
+Controls experiment execution based on command-line input.
+- Runs different experiment modes (Tennis, Iris, selection tests, replacement tests)
+- Configures GA parameters
+- Prints results and tracks performance across runs
 
+---
 
 ### ga.h / ga.cpp
+Core implementation of the Genetic Algorithm.
+- Defines rules, individuals, and GA configuration
+- Implements:
+  - Selection (roulette, tournament, rank)
+  - Crossover (combine individuals)
+  - Mutation (modify rules and structure)
+- Evaluates individuals using training and test accuracy
+- Runs evolution across generations to find the best rule set
 
+---
 
 ### util.h / util.cpp
+Utility/helper functions used across the project.
+- String processing (split, trim)
+- Random number generation (uniform float and integer)
+> These functions support parsing and stochastic behavior in the GA
 
+---
 
 ### main.cpp
-
+Entry point of the program.
+- Calls `run_command()` to execute experiments
+- Handles errors safely using try-catch
+> Keeps the program simple and delegates logic to experiments.cpp
 
 ### data/
 Contains datasets used for experiments.
