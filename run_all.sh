@@ -1,4 +1,4 @@
-make | exit 1
+make || exit 1
 echo ""
 
 echo "----------testTennis----------"
