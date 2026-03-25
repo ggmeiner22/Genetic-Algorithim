@@ -131,20 +131,26 @@ Entry point of the program.
 - Handles errors safely using try-catch
 > Keeps the program simple and delegates logic to experiments.cpp
 
+---
+
 ### data/
 Contains datasets used for experiments.
 - **tennis**-* – discrete attribute classification dataset
 - **iris**-* – continuous attribute classification dataset
 > Each dataset includes an attribute file describing the schema and corresponding training/testing files.
 
+---
+
 ### scripts/
-Automation scripts for running individual experiments, hyperparameter searches, and plotting runs.
-- `run_identity.sh`
-- `run_tennis.sh`
-- `run_iris.sh`
-- `run_irisNoisy.sh`
-- `grid_search.sh`
-- `make_plot.sh`
+Automation scripts for running experiments.
+- `testTennis.sh` -> runs Tennis experiment
+- `testIris.sh` -> runs Iris experiment
+- `testIrisSelection.sh` -> tests different selection strategies
+- `testIrisReplacement.sh` -> tests different replacement rates
+- `gridSearch.sh` -> performs hyperparameter grid search
+
+
+---
 
 ### Makefile
 Defines compilation rules for building the project.
@@ -152,6 +158,8 @@ Defines compilation rules for building the project.
 - Compiles source files into object files
 - Links the final executable
 > Ensures consistent builds across machines
+
+---
 
 ### run_all.sh
 - Builds the project
