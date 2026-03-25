@@ -16,6 +16,8 @@ Key features:
 - Discretization of continuous attributes into bins
 - Experiment scripts for evaluating performance across parameters
 
+---
+
 ## Compalation and Execution
 ```
 chmod -R u+w .
@@ -27,6 +29,9 @@ chmod +x src/*.cpp
 ```
 ./run_all.sh
 ```
+
+---
+
 ### Run Individually
 #### Build
 ```
@@ -52,6 +57,8 @@ make
 ```
 make clean
 ```
+
+---
 
 ## File Structure
 ```
