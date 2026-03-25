@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -pedantic -Iinclude
+CXXFLAGS = -std=c++11 -O2 -Wall -Wextra -pedantic -Iinclude
 
 SRC = src/main.cpp src/util.cpp src/dataset.cpp src/ga.cpp src/experiments.cpp
 OBJ = $(SRC:.cpp=.o)
